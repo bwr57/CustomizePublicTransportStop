@@ -273,7 +273,7 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase
 		{
 			newRelation.addMember(new RelationMember("", otherMember));
 		}
-		Main.main.undoRedo.add(new AddCommand(newRelation));
+		Main.main.undoRedo.add(new AddCommand(getCurrentDataSet(), newRelation));
 		commands = generalTagAssign(newRelation, commands, stopArea);
 		commands = assignTag(commands, newRelation, OSMTags.TYPE_TAG, OSMTags.PUBLIC_TRANSPORT_TAG);
 		commands = assignTag(commands, newRelation, OSMTags.PUBLIC_TRANSPORT_TAG, OSMTags.STOP_AREA_TAG_VALUE);
@@ -484,7 +484,7 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase
 			{
 				Node newNode =new Node();
 				newNode.setCoor(centerOfPlatform);
-		    	Main.main.undoRedo.add(new AddCommand(newNode));
+		    	Main.main.undoRedo.add(new AddCommand(getCurrentDataSet(), newNode));
 		    	Main.main.undoRedo.add(new ChangePropertyCommand(newNode, tag, tagValue));
 				commands = assignTag(commands, newNode, tag, tagValue);
 				stopArea.otherMembers.add(newNode);
