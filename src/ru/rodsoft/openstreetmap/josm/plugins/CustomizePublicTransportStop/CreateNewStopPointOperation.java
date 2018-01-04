@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.command.AddCommand;
 import org.openstreetmap.josm.command.ChangeCommand;
 import org.openstreetmap.josm.data.coor.EastNorth;
@@ -59,7 +60,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
             snapDistanceSq *= snapDistanceSq;
 
             for (Node n : ds.searchNodes(getBBox(p, 200))) {
-                if ((dist = Main.map.mapView.getPoint2D(n).distanceSq(p)) < snapDistanceSq)
+                if ((dist = MainApplication.getMap().mapView.getPoint2D(n).distanceSq(p)) < snapDistanceSq)
                 {
                     List<Node> nlist;
                     if (nearestMap.containsKey(dist)) {
@@ -83,8 +84,8 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
      * @return Area
      */
     private BBox getBBox(Point p, int snapDistance) {
-        return new BBox(Main.map.mapView.getLatLon(p.x - snapDistance, p.y - snapDistance),
-        		Main.map.mapView.getLatLon(p.x + snapDistance, p.y + snapDistance));
+        return new BBox(MainApplication.getMap().mapView.getLatLon(p.x - snapDistance, p.y - snapDistance),
+        		MainApplication.getMap().mapView.getLatLon(p.x + snapDistance, p.y + snapDistance));
     }
 
     /**
@@ -95,7 +96,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
      */
     public AbstractMap.SimpleEntry<Double, Node> getNearestNode(LatLon platformCoord, StopArea stopArea)
     {
-    	Point p = Main.map.mapView.getPoint(platformCoord);
+    	Point p = MainApplication.getMap().mapView.getPoint(platformCoord);
     	Map<Double, List<Node>> dist_nodes = getNearestNodesImpl(p);
     	Double[] distances = dist_nodes.keySet().toArray(new Double[0]);
     	distances = sort(distances);
@@ -195,10 +196,10 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
         DataSet ds = getCurrentDataSet();
 
         if (ds != null) {
-            double snapDistanceSq = Main.pref.getInteger("mappaint.segment.snap-distance", 200);
+            double snapDistanceSq = Main.pref.getInt("mappaint.segment.snap-distance", 200);
             snapDistanceSq *= snapDistanceSq;
 
-            for (Way w : ds.searchWays(getBBox(p, Main.pref.getInteger("mappaint.segment.snap-distance", 200)))) {
+            for (Way w : ds.searchWays(getBBox(p, Main.pref.getInt("mappaint.segment.snap-distance", 200)))) {
                 Node lastN = null;
                 int i = -2;
                 for (Node n : w.getNodes()) {
@@ -211,8 +212,8 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
                         continue;
                     }
 
-                    Point2D A = Main.map.mapView.getPoint2D(lastN);
-                    Point2D B = Main.map.mapView.getPoint2D(n);
+                    Point2D A = MainApplication.getMap().mapView.getPoint2D(lastN);
+                    Point2D B = MainApplication.getMap().mapView.getPoint2D(n);
                     double c = A.distanceSq(B);
                     double a = p.distanceSq(B);
                     double b = p.distanceSq(A);
@@ -254,7 +255,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
     protected NearestWaySegment getNearestWaySegment(LatLon platformCoord, StopArea stopArea)
     {
     	
-    	Point p = Main.map.mapView.getPoint(platformCoord);
+    	Point p = MainApplication.getMap().mapView.getPoint(platformCoord);
     	Map<Double, List<WaySegment>> dist_waySegments = getNearestWaySegmentsImpl(p);
     	for(Map.Entry<Double, List<WaySegment>> entry : dist_waySegments.entrySet())
     	{
@@ -266,11 +267,11 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
     				Node lastN = waySegment.getSecondNode();
     		
             		EastNorth newPosition = Geometry.closestPointToSegment(n.getEastNorth(),
-              			 lastN.getEastNorth(), Projections.project(platformCoord));
-            		LatLon newNodePosition = Projections.inverseProject(newPosition);
-                	Point2D lastN2D = Main.map.mapView.getPoint2D(lastN);
-                	Point2D n2D = Main.map.mapView.getPoint2D(n);
-            		Point2D newNodePosition2D = Main.map.mapView.getPoint2D(newNodePosition);
+              			 lastN.getEastNorth(), Main.getProjection().latlon2eastNorth(platformCoord));
+            		LatLon newNodePosition = Main.getProjection().eastNorth2latlon(newPosition);
+                	Point2D lastN2D = MainApplication.getMap().mapView.getPoint2D(lastN);
+                	Point2D n2D = MainApplication.getMap().mapView.getPoint2D(n);
+            		Point2D newNodePosition2D = MainApplication.getMap().mapView.getPoint2D(newNodePosition);
             		Double distCurrenNodes =lastN2D.distance(n2D); 
             		if((newNodePosition2D.distance(lastN2D) < distCurrenNodes) && (newNodePosition2D.distance(n2D) < distCurrenNodes))
             		{
@@ -290,7 +291,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
      */
     protected Node createNodeOnWay(Node newStopNode, WaySegment waySegment)
     {
-    	Main.main.undoRedo.add(new AddCommand(newStopNode));
+    	Main.main.undoRedo.add(new AddCommand(getCurrentDataSet(), newStopNode));
     	List<Node> wayNodes = waySegment.way.getNodes();
     	wayNodes.add(waySegment.lowerIndex + 1, newStopNode); 
     	Way newWay = new Way(waySegment.way);
@@ -320,7 +321,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase
 		Node newStopPointNode = null;
 		if(nearestNode != null && nearestWaySegment != null)
 		{
-			Double segmentDist = Main.map.mapView.getPoint2D(platformCoord).distanceSq(Main.map.mapView.getPoint2D(nearestWaySegment.newNode));
+			Double segmentDist = MainApplication.getMap().mapView.getPoint2D(platformCoord).distanceSq(MainApplication.getMap().mapView.getPoint2D(nearestWaySegment.newNode));
 			Double nodeDistSq =  nearestNode.getKey();
 //			nodeDistSq *= nodeDistSq - 2;
 			if(segmentDist < nodeDistSq - 2)
