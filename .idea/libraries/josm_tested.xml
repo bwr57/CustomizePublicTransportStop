@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="josm-tested">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../josm1/josm-tested.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

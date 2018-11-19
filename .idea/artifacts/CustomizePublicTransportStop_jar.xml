@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CustomizePublicTransportStop:jar">
+    <output-path>$PROJECT_DIR$/jar</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true" />
+    </properties>
+    <root id="archive" name="CustomizePublicTransportStop.jar">
+      <element id="module-output" name="JOSM-CustomizePublicTransportStop" />
+      <element id="file-copy" path="$PROJECT_DIR$/GPL-v2.0.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/GPL-v3.0.txt" />
+    </root>
+  </artifact>
+</component>
