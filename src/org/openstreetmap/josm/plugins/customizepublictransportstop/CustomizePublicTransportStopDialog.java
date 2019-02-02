@@ -34,7 +34,7 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     private static final String SAVE_BUTTON_CAPTION = "Save";
     private static final String AREA_CAPTION = "Area";
     private static final String COVER_CAPTION = "Cover";
-    private static final String SHELTER_CAPTION = "Shelter";
+    private static final String SHELTER_CAPTION = "Shelter ";
     private static final String BENCH_CAPTION = "Bench";
     private static final String RAILWAY_STOP_CAPTION = "Railway stop";
     private static final String RAILWAY_STATION_CAPTION = "Railway station";
