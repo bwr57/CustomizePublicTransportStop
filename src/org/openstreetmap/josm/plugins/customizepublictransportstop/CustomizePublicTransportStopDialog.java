@@ -33,7 +33,7 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     private static final String SAVE_COMMAND = "save";
 
     private static final String PUBLIC_TRANSPORT_LANG_SECTION_NAME = "PublicTransport";
-    private static final String CANCEL_BUTTON_CAPTION = "Cancel";
+    private static final String CANCEL_BUTTON_CAPTION = "Cancel1111";
     private static final String SAVE_BUTTON_CAPTION = "Save";
     private static final String AREA_CAPTION = "Area";
     private static final String COVER_CAPTION = "Cover";
@@ -58,12 +58,18 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     public static final String COMMUTER_NETWORK_CAPTION = "Commuter";
     public static final String CITY_NETWORK_CAPTION = "City transport";
     public static final String HIGH_SPEED_NETWORK_CAPTION = "High speed";
+    public static final String TOURISM_NETWORK_CAPTION = "Tourism";
+    public static final String SCHOOL_NETWORK_CAPTION = "School";
+    public static final String FACTORY_NETWORK_CAPTION = "Factory";
+
 
     private String[] serviceCaptionStrings = {CITY_NETWORK_CAPTION, COMMUTER_NETWORK_CAPTION, REGIONAL_NETWORK_CAPTION,
-            LONG_DISTANCE_NETWORK_CAPTION, HIGH_SPEED_NETWORK_CAPTION};
+            LONG_DISTANCE_NETWORK_CAPTION, HIGH_SPEED_NETWORK_CAPTION, TOURISM_NETWORK_CAPTION, SCHOOL_NETWORK_CAPTION,
+            FACTORY_NETWORK_CAPTION};
     private String[] serviceStrings = {OSMTags.CITY_NETWORK_TAG_VALUE, OSMTags.COMMUTER_NETWORK_TAG_VALUE,
             OSMTags.REGIONAL_NETWORK_TAG_VALUE, OSMTags.LONG_DISTANCE_NETWORK_TAG_VALUE,
-            OSMTags.HIGH_SPEED_NETWORK_TAG_VALUE};
+            OSMTags.HIGH_SPEED_NETWORK_TAG_VALUE, OSMTags.TOURISM_NETWORK_TAG_VALUE, OSMTags.SCHOOL_NETWORK_TAG_VALUE,
+            OSMTags.FACTORY_NETWORK_TAG_VALUE};
 
     private JDialog jDialog = null;
     private JTextField textFieldName = null;
@@ -545,6 +551,8 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
             textFieldOperator.setText(stopArea.operator);
         else if (previousOperator != null)
             textFieldOperator.setText(previousOperator);
+//        if (stopArea.additionalSelectedObject != null)
+//            textFieldOperator.setText(String.valueOf(stopArea.additionalSelectedObject.getId()));
         comboBoxService.setSelectedIndex(getServiceIndex(stopArea.service));
         setCheckBoxValue(checkBoxIsBus, stopArea.isBus);
         setCheckBoxValue(checkBoxIsShareTaxi, stopArea.isShareTaxi);

@@ -174,15 +174,63 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
         return false;
     }
 
-    /**
-     * The *result* does not depend on the current map selection state, neither does
-     * the result *order*. It solely depends on the distance to point p.
-     *
-     * This code is coped from JOSM code
-     * 
-     * @return a sorted map with the keys representing the perpendicular distance of
-     *         their associated way segments to point p.
-     */
+    protected Map<Double, List<WaySegment>> getNearestWaySegmentInTheWay(Map<Double, List<WaySegment>> nearestMap,
+                                                                         Point p, Way w, double snapDistanceSq) {
+        if(null == nearestMap)
+            nearestMap = new TreeMap<>();
+        Node lastN = null;
+        int i = -2;
+        for (Node n : w.getNodes()) {
+            i++;
+            if (n.isDeleted() || n.isIncomplete()) { // FIXME: This shouldn't happen, raise exception?
+                continue;
+            }
+            if (lastN == null) {
+                lastN = n;
+                continue;
+            }
+
+            Point2D A = MainApplication.getMap().mapView.getPoint2D(lastN);
+            Point2D B = MainApplication.getMap().mapView.getPoint2D(n);
+            double c = A.distanceSq(B);
+            double a = p.distanceSq(B);
+            double b = p.distanceSq(A);
+
+            /*
+             * perpendicular distance squared loose some precision to account for possible
+             * deviations in the calculation above e.g. if identical (A and B) come about
+             * reversed in another way, values may differ -- zero out least significant 32
+             * dual digits of mantissa..
+             */
+            double perDistSq = Double.longBitsToDouble(
+                    // resolution in numbers with large exponent not needed here..
+                    Double.doubleToLongBits(a - (a - b + c) * (a - b + c) / 4 / c) >> 32 << 32);
+
+            if (perDistSq < snapDistanceSq && a < c + snapDistanceSq && b < c + snapDistanceSq) {
+                List<WaySegment> wslist;
+                if (nearestMap.containsKey(perDistSq)) {
+                    wslist = nearestMap.get(perDistSq);
+                } else {
+                    wslist = new LinkedList<>();
+                    nearestMap.put(perDistSq, wslist);
+                }
+                wslist.add(new WaySegment(w, i));
+            }
+
+            lastN = n;
+        }
+        return nearestMap;
+    }
+
+            /**
+             * The *result* does not depend on the current map selection state, neither does
+             * the result *order*. It solely depends on the distance to point p.
+             *
+             * This code is coped from JOSM code
+             *
+             * @return a sorted map with the keys representing the perpendicular distance of
+             *         their associated way segments to point p.
+             */
     private Map<Double, List<WaySegment>> getNearestWaySegmentsImpl(Point p) {
         Map<Double, List<WaySegment>> nearestMap = new TreeMap<>();
         DataSet ds = getCurrentDataSet();
@@ -192,47 +240,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
             snapDistanceSq *= snapDistanceSq;
 
             for (Way w : ds.searchWays(getBBox(p, Config.getPref().getInt("mappaint.segment.snap-distance", 200)))) {
-                Node lastN = null;
-                int i = -2;
-                for (Node n : w.getNodes()) {
-                    i++;
-                    if (n.isDeleted() || n.isIncomplete()) { // FIXME: This shouldn't happen, raise exception?
-                        continue;
-                    }
-                    if (lastN == null) {
-                        lastN = n;
-                        continue;
-                    }
-
-                    Point2D A = MainApplication.getMap().mapView.getPoint2D(lastN);
-                    Point2D B = MainApplication.getMap().mapView.getPoint2D(n);
-                    double c = A.distanceSq(B);
-                    double a = p.distanceSq(B);
-                    double b = p.distanceSq(A);
-
-                    /*
-                     * perpendicular distance squared loose some precision to account for possible
-                     * deviations in the calculation above e.g. if identical (A and B) come about
-                     * reversed in another way, values may differ -- zero out least significant 32
-                     * dual digits of mantissa..
-                     */
-                    double perDistSq = Double.longBitsToDouble(
-                            // resolution in numbers with large exponent not needed here..
-                            Double.doubleToLongBits(a - (a - b + c) * (a - b + c) / 4 / c) >> 32 << 32);
-
-                    if (perDistSq < snapDistanceSq && a < c + snapDistanceSq && b < c + snapDistanceSq) {
-                        List<WaySegment> wslist;
-                        if (nearestMap.containsKey(perDistSq)) {
-                            wslist = nearestMap.get(perDistSq);
-                        } else {
-                            wslist = new LinkedList<>();
-                            nearestMap.put(perDistSq, wslist);
-                        }
-                        wslist.add(new WaySegment(w, i));
-                    }
-
-                    lastN = n;
-                }
+                nearestMap = getNearestWaySegmentInTheWay(nearestMap, p, w, snapDistanceSq);
             }
         }
 
@@ -249,7 +257,15 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
     protected NearestWaySegment getNearestWaySegment(LatLon platformCoord, StopArea stopArea) {
         MapView mapView = MainApplication.getMap().mapView;
         Point p = mapView.getPoint(platformCoord);
-        Map<Double, List<WaySegment>> dist_waySegments = getNearestWaySegmentsImpl(p);
+        Map<Double, List<WaySegment>> dist_waySegments = null;
+        if(null !=  stopArea.additionalSelectedObject && stopArea.additionalSelectedObject instanceof Way) {
+            double sq = Config.getPref().getInt("mappaint.segment.snap-distance", 200);
+            sq *= sq;
+            dist_waySegments = getNearestWaySegmentInTheWay(dist_waySegments, p, (Way) stopArea.additionalSelectedObject,
+                    sq);
+        }
+        else
+            dist_waySegments = getNearestWaySegmentsImpl(p);
         for (Map.Entry<Double, List<WaySegment>> entry : dist_waySegments.entrySet()) {
             for (WaySegment waySegment : entry.getValue()) {
                 if (testWay(waySegment.way, stopArea)) {
@@ -304,9 +320,10 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
             platformCoord = getCenterOfWay(stopArea.selectedObject);
         if (platformCoord == null)
             return stopArea;
-        AbstractMap.SimpleEntry<Double, Node> nearestNode = getNearestNode(platformCoord, stopArea);
-        NearestWaySegment nearestWaySegment = getNearestWaySegment(platformCoord, stopArea);
         Node newStopPointNode = null;
+        AbstractMap.SimpleEntry<Double, Node> nearestNode = getNearestNode(platformCoord, stopArea);
+        NearestWaySegment nearestWaySegment = null;
+        nearestWaySegment = getNearestWaySegment(platformCoord, stopArea);
         if (nearestNode != null && nearestWaySegment != null) {
             MapView mapView = MainApplication.getMap().mapView;
             Double segmentDist = mapView.getPoint2D(platformCoord)

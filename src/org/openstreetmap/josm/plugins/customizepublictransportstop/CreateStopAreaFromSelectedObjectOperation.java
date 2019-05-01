@@ -9,7 +9,6 @@ import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.RelationMember;
-import sun.security.provider.certpath.IndexedCollectionCertStore;
 
 /**
  * Operation of constructing of stop area object from selected JOSM object
@@ -97,7 +96,7 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
      * 
      * @param stopArea Selected stop area
      */
-    public void fromSelectedObject(StopArea stopArea) {
+    public void   fromSelectedObject(StopArea stopArea) {
         Collection<OsmPrimitive> selectedObjects = new ArrayList<OsmPrimitive>();
         selectedObjects.add(stopArea.selectedObject);
         for (Relation rel : OsmPrimitive.getParentRelations(selectedObjects)) {
@@ -162,8 +161,18 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
         OsmPrimitive selectedObject = selectedObjects.iterator().next();
         if (selectedObject == null)
             return null;
+        OsmPrimitive additionalSelectedObject = null;
+        if(selectedObjects.size() > 1)
+        {
+            OsmPrimitive[] selectedObjectsArr = new OsmPrimitive[selectedObjects.size()];
+            selectedObjects.toArray(selectedObjectsArr);
+            additionalSelectedObject = selectedObjectsArr[1];
+        }
         if (stopArea == null)
-            stopArea = new StopArea(selectedObject);
+            if (additionalSelectedObject == null)
+                stopArea = new StopArea(selectedObject);
+            else
+                stopArea = new StopArea(selectedObject, additionalSelectedObject);
         fromSelectedObject(stopArea);
         return stopArea;
     }

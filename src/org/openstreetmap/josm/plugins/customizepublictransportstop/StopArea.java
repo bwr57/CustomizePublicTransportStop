@@ -94,7 +94,43 @@ public class StopArea {
     /**
      * Separate node of bus stop or bus station
      */
-    public Node separateBusStopNode = null;
+    public String ref = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String localRef = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public Boolean passengerInformationDisplay = false;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String departuresBoard = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String tactilePaving = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String layer = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public Boolean lit = false;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public Boolean bin = false;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String surface = null;
+    /**
+     * Separate node of bus stop or bus station
+     */
+    public String onDemand = null;
 
     /**
      * List of nodes of stop positions
@@ -113,6 +149,10 @@ public class StopArea {
      * Selected josm objects. Must be a platform
      */
     public OsmPrimitive selectedObject = null;
+    /**
+     * Selected josm objects. Must be a platform
+     */
+    public OsmPrimitive additionalSelectedObject = null;
 
     /**
      * Constructor of stop area object
@@ -129,6 +169,17 @@ public class StopArea {
         this.selectedObject = selectedObject;
     }
 
+    /**
+     * Constructor of stop area object from selected object
+     *
+     * @param selectedObject Selected object
+     */
+    public StopArea(OsmPrimitive selectedObject, OsmPrimitive additionalSelectedObject) {
+        this.selectedObject = selectedObject;
+   //     if(null != additionalSelectedObject && additionalSelectedObject instanceof Way) {
+            this.additionalSelectedObject = (Way)additionalSelectedObject;
+    //    }
+    }
     /**
      * Get selected in editor node
      * 
