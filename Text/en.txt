@@ -19,10 +19,58 @@ Bus station
 Tram
 Railway station
 Railway stop
-Assign transport type to platform
+PublicTransport\u0004Assign transport type to platform
 PublicTransport\u0004Shelter
 Bench
 Cover
 Area
 Save
 Cancel
+Subway station
+Tourism
+School transport
+Factory
+Ref
+Platform ref
+Layer
+Board
+Tactile paving
+Lit
+Bin
+Surface
+On demand
+Timetable
+Delay
+Realtime
+Incorrect
+Primitive paving
+Contrasted
+Unknown
+Paved
+Asphalt
+Concrete
+Paving stones
+Sett
+Unheun cobblestone
+Cobblestone
+Metal
+Wood
+Unpaved
+Compacted
+Fine gravel
+Gravel
+Pebblestone
+Dirt
+Grass
+Grass paver
+Ground
+Mud
+Sand
+Woodchips
+Snow
+Ice
+Salt
+Regular
+Transport types
+Platform attributes
+Set default values

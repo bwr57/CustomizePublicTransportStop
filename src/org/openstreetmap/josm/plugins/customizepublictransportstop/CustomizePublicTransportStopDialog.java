@@ -4,10 +4,7 @@ package org.openstreetmap.josm.plugins.customizepublictransportstop;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import static org.openstreetmap.josm.tools.I18n.trc;
 
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 
@@ -33,12 +30,13 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     private static final String SAVE_COMMAND = "save";
 
     private static final String PUBLIC_TRANSPORT_LANG_SECTION_NAME = "PublicTransport";
-    private static final String CANCEL_BUTTON_CAPTION = "Cancel1111";
+    private static final String CANCEL_BUTTON_CAPTION = "Cancel";
     private static final String SAVE_BUTTON_CAPTION = "Save";
     private static final String AREA_CAPTION = "Area";
     private static final String COVER_CAPTION = "Cover";
     private static final String SHELTER_CAPTION = "Shelter";
     private static final String BENCH_CAPTION = "Bench";
+    private static final String SUBWAY_STATION_CAPTION = "Subway station";
     private static final String RAILWAY_STOP_CAPTION = "Railway stop";
     private static final String RAILWAY_STATION_CAPTION = "Railway station";
     private static final String TRAM_CAPTION = "Tram";
@@ -59,36 +57,145 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     public static final String CITY_NETWORK_CAPTION = "City transport";
     public static final String HIGH_SPEED_NETWORK_CAPTION = "High speed";
     public static final String TOURISM_NETWORK_CAPTION = "Tourism";
-    public static final String SCHOOL_NETWORK_CAPTION = "School";
+    public static final String SCHOOL_NETWORK_CAPTION = "School transport";
     public static final String FACTORY_NETWORK_CAPTION = "Factory";
+
+    public static final String REF_CAPTION = "Ref";
+    public static final String LOCAL_REF_CAPTION = "Platform ref";
+    public static final String LAYER_CAPTION = "Layer";
+    public static final String PASSENGER_INFORMATION_DISPLAY_CAPTION = "Timesheet";
+    public static final String DEPARTURES_BOARD_CAPTION = "Board";
+    public static final String TACTILE_PAVING_CAPTION = "Tactile paving";
+    public static final String LIT_CAPTION = "Lit";
+    public static final String BIN_CAPTION = "Bin";
+    public static final String SURFACE_CAPTION = "Surface";
+    public static final String ON_DEMAND_CAPTION = "On demand";
+
+    public static final String DEPARTURES_BOARD_NO_CAPTION = "No";
+    public static final String DEPARTURES_BOARD_YES_CAPTION = "Yes";
+    public static final String DEPARTURES_BOARD_TIMETABLE_CAPTION = "Timetable";
+    public static final String DEPARTURES_BOARD_DELAY_CAPTION = "Delay";
+    public static final String DEPARTURES_BOARD_REALTIME_CAPTION = "Realtime";
+
+    public static final String TACTILE_PAVING_NO_CAPTION = "No";
+    public static final String TACTILE_PAVING_YES_CAPTION = "Yes";
+    public static final String TACTILE_PAVING_CONTRASTED_CAPTION = "Contrasted";
+    public static final String TACTILE_PAVING_PRIMITIVE_CAPTION = "Primitive paving";
+    public static final String TACTILE_PAVING_INCORRECT_CAPTION = "Incorrect";
+
+    public static final String SURFACE_UNKNOWN_CAPTION = "Unknown";
+    public static final String SURFACE_PAVED_CAPTION = "Paved";
+    public static final String SURFACE_ASPHALT_CAPTION = "Asphalt";
+    public static final String SURFACE_CONCRETE_CAPTION = "Concrete";
+    public static final String SURFACE_PAVING_STONES_CAPTION = "Paving stones";
+    public static final String SURFACE_SETT_CAPTION = "Sett";
+    public static final String SURFACE_UNHEUN_COBBLESTONE_CAPTION = "Unheun cobblestone";
+    public static final String SURFACE_COBBLESTONE_CAPTION = "Cobblestone";
+    public static final String SURFACE_METAL_CAPTION = "Metal";
+    public static final String SURFACE_WOOD_CAPTION = "Wood";
+    public static final String SURFACE_UNPAVED_CAPTION = "Unpaved";
+    public static final String SURFACE_COMPACTED_CAPTION = "Compacted";
+    public static final String SURFACE_FINE_GRAVEL_CAPTION = "Fine gravel";
+    public static final String SURFACE_GRAVEL_CAPTION = "Gravel";
+    public static final String SURFACE_PEBBLESTONE_CAPTION = "Pebblestone";
+    public static final String SURFACE_DIRT_CAPTION = "Dirt";
+    public static final String SURFACE_GRASS_CAPTION = "Grass";
+    public static final String SURFACE_GRASS_PAVER_CAPTION = "Grass paver";
+    public static final String SURFACE_GROUND_CAPTION = "Ground";
+    public static final String SURFACE_MUD_CAPTION = "Mud";
+    public static final String SURFACE_SAND_CAPTION = "Sand";
+    public static final String SURFACE_WOODCHIPS_CAPTION = "Woodchips";
+    public static final String SURFACE_SNOW_CAPTION = "Snow";
+    public static final String SURFACE_ICE_CAPTION = "Ice";
+    public static final String SURFACE_SALT_CAPTION = "Salt";
+    private static final String REGULAR_STOP_CAPTION = "Regular";
+
+    private static final String TRANSPORT_TYPES_CAPTION = "Transport types";
+    private static final String PLATFORM_ATTRIBUTES_CAPTION = "Platform attributes";
+    private static final String SET_DEFAULT_VALUES_CAPTION = "Set default values";
 
 
     private String[] serviceCaptionStrings = {CITY_NETWORK_CAPTION, COMMUTER_NETWORK_CAPTION, REGIONAL_NETWORK_CAPTION,
             LONG_DISTANCE_NETWORK_CAPTION, HIGH_SPEED_NETWORK_CAPTION, TOURISM_NETWORK_CAPTION, SCHOOL_NETWORK_CAPTION,
             FACTORY_NETWORK_CAPTION};
-    private String[] serviceStrings = {OSMTags.CITY_NETWORK_TAG_VALUE, OSMTags.COMMUTER_NETWORK_TAG_VALUE,
+    private String[] serviceTagValues = {OSMTags.CITY_NETWORK_TAG_VALUE, OSMTags.COMMUTER_NETWORK_TAG_VALUE,
             OSMTags.REGIONAL_NETWORK_TAG_VALUE, OSMTags.LONG_DISTANCE_NETWORK_TAG_VALUE,
             OSMTags.HIGH_SPEED_NETWORK_TAG_VALUE, OSMTags.TOURISM_NETWORK_TAG_VALUE, OSMTags.SCHOOL_NETWORK_TAG_VALUE,
             OSMTags.FACTORY_NETWORK_TAG_VALUE};
+    private String[] onDemandCaptionStrings = { REGULAR_STOP_CAPTION, CITY_NETWORK_CAPTION, COMMUTER_NETWORK_CAPTION, REGIONAL_NETWORK_CAPTION,
+            LONG_DISTANCE_NETWORK_CAPTION, HIGH_SPEED_NETWORK_CAPTION, TOURISM_NETWORK_CAPTION, SCHOOL_NETWORK_CAPTION,
+            FACTORY_NETWORK_CAPTION};
+    private String[] onDemandTagValues = { OSMTags.REGULAR_STOP_TAG_VALUE, OSMTags.CITY_NETWORK_TAG_VALUE,
+            OSMTags.COMMUTER_NETWORK_TAG_VALUE,
+            OSMTags.REGIONAL_NETWORK_TAG_VALUE, OSMTags.LONG_DISTANCE_NETWORK_TAG_VALUE,
+            OSMTags.HIGH_SPEED_NETWORK_TAG_VALUE, OSMTags.TOURISM_NETWORK_TAG_VALUE, OSMTags.SCHOOL_NETWORK_TAG_VALUE,
+            OSMTags.FACTORY_NETWORK_TAG_VALUE};
+    private String[] departuresBoardCaptionStrings= { DEPARTURES_BOARD_NO_CAPTION, DEPARTURES_BOARD_YES_CAPTION,
+            DEPARTURES_BOARD_TIMETABLE_CAPTION,
+            DEPARTURES_BOARD_DELAY_CAPTION, DEPARTURES_BOARD_REALTIME_CAPTION };
+    private String[] departuresBoardTagValues={OSMTags.NO_TAG_VALUE, OSMTags.DEPARTURES_BOARD_YES_TAG_VALUE,
+            OSMTags.DEPARTURES_BOARD_TIMETABLE_TAG_VALUE,
+            OSMTags.DEPARTURES_BOARD_DELAY_TAG_VALUE, OSMTags.DEPARTURES_BOARD_REALTIME_TAG_VALUE };
+    private String[] tactilePavingCaptionStrings= { TACTILE_PAVING_NO_CAPTION, TACTILE_PAVING_YES_CAPTION,
+            TACTILE_PAVING_PRIMITIVE_CAPTION,
+            TACTILE_PAVING_CONTRASTED_CAPTION, TACTILE_PAVING_INCORRECT_CAPTION };
+    private String[] tactilePavingTagValues={OSMTags.NO_TAG_VALUE, OSMTags.TACTILE_PAVING_YES_TAG_VALUE,
+            OSMTags.TACTILE_PAVING_PRIMITIVE_TAG_VALUE,
+            OSMTags.TACTILE_PAVING_CONTRASTED_TAG_VALUE, OSMTags.TACTILE_PAVING_INCORRECT_TAG_VALUE };
+    private String[] surfaceCaptionStrings = { SURFACE_UNKNOWN_CAPTION, SURFACE_PAVED_CAPTION, SURFACE_ASPHALT_CAPTION,
+                     SURFACE_CONCRETE_CAPTION,
+                     SURFACE_PAVING_STONES_CAPTION, SURFACE_SETT_CAPTION, SURFACE_UNHEUN_COBBLESTONE_CAPTION,
+                     SURFACE_COBBLESTONE_CAPTION, SURFACE_METAL_CAPTION, SURFACE_WOOD_CAPTION, SURFACE_UNPAVED_CAPTION,
+                     SURFACE_COMPACTED_CAPTION, SURFACE_FINE_GRAVEL_CAPTION, SURFACE_GRAVEL_CAPTION, 
+                     SURFACE_PEBBLESTONE_CAPTION, SURFACE_DIRT_CAPTION, SURFACE_GRASS_CAPTION, SURFACE_GRASS_PAVER_CAPTION, 
+                     SURFACE_GROUND_CAPTION, SURFACE_MUD_CAPTION, SURFACE_SAND_CAPTION, SURFACE_WOODCHIPS_CAPTION,
+                     SURFACE_SNOW_CAPTION, SURFACE_ICE_CAPTION, SURFACE_SALT_CAPTION };
+    private String[] surfaceTagValues = { OSMTags.UNKNOWN_TAG_VALUE, OSMTags.SURFACE_PAVED_TAG_VALUE,
+            OSMTags.SURFACE_ASPHALT_TAG_VALUE,
+            OSMTags.SURFACE_CONCRETE_TAG_VALUE, OSMTags.SURFACE_PAVING_STONES_TAG_VALUE,
+            OSMTags.SURFACE_SETT_TAG_VALUE, OSMTags.SURFACE_UNHEUN_COBBLESTONE_TAG_VALUE,
+            OSMTags.SURFACE_COBBLESTONE_TAG_VALUE, OSMTags.SURFACE_METAL_TAG_VALUE,
+            OSMTags.SURFACE_WOOD_TAG_VALUE, OSMTags.SURFACE_UNPAVED_TAG_VALUE,
+            OSMTags.SURFACE_COMPACTED_TAG_VALUE, OSMTags.SURFACE_FINE_GRAVEL_TAG_VALUE,
+            OSMTags.SURFACE_GRAVEL_TAG_VALUE, OSMTags.SURFACE_PEBBLESTONE_TAG_VALUE, OSMTags.SURFACE_DIRT_TAG_VALUE,
+            OSMTags.SURFACE_GRASS_TAG_VALUE, OSMTags.SURFACE_GRASS_PAVER_TAG_VALUE,
+            OSMTags.SURFACE_GROUND_TAG_VALUE, OSMTags.SURFACE_MUD_TAG_VALUE, OSMTags.SURFACE_SAND_TAG_VALUE,
+            OSMTags.SURFACE_WOODCHIPS_TAG_VALUE, OSMTags.SURFACE_SNOW_TAG_VALUE, OSMTags.SURFACE_ICE_TAG_VALUE,
+            OSMTags.SURFACE_SALT_TAG_VALUE  };
+    private String[] layerCaptionStrings = { "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5" };
+    private String[] layerTagValues = { "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5" };
+
 
     private JDialog jDialog = null;
     private JTextField textFieldName = null;
     private JTextField textFieldNameEn;
+    private JTextField textFieldRef = null;
     private JTextField textFieldNetwork;
     private JTextField textFieldOperator;
     private JComboBox<String> comboBoxService;
+    private JComboBox<String> comboBoxOnDemand;
     private JCheckBox checkBoxIsBus;
     private JCheckBox checkBoxIsTrolleybus;
     private JCheckBox checkBoxIsShareTaxi;
     private JCheckBox checkBoxIsBusStation;
     private JCheckBox checkBoxIsAssignTransportType;
     private JCheckBox checkBoxIsTram;
+    private JCheckBox checkBoxIsSubwayStation;
     private JCheckBox checkBoxIsTrainStation;
     private JCheckBox checkBoxIsTrainStop;
+    private JTextField textFieldLocalRef = null;
+    private JComboBox<String> comboBoxLayer;
+    private JComboBox<String> comboBoxSurface;
+    private JComboBox<String> comboBoxTactilePaving;
+    private JCheckBox checkBoxIsPassengerInformationDisplay;
+    private JComboBox<String> comboBoxDeparturesBoard;
     private JCheckBox checkBoxIsBench;
     private JCheckBox checkBoxIsShelter;
     private JCheckBox checkBoxIsCover;
+    private JCheckBox checkBoxIsLit;
+    private JCheckBox checkBoxIsBin;
     private JCheckBox checkBoxIsArea;
+    private JCheckBox checkBoxIsSetDefaultValues;
 
     /**
      * Stop area
@@ -120,6 +227,8 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
      * Operator name at previous call
      */
     private static String previousOperator = null;
+
+    private static Boolean previousIsSetDefaultValues = false;
 
     /**
      * Reference to dialog object
@@ -164,232 +273,146 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
 
     }
 
+    private void setupGridBagConstraints(GridBagConstraints layoutCons,
+                                         Integer row, Integer column, Integer rowSpan) {
+        layoutCons.gridx = column;
+        layoutCons.gridy = row;
+        layoutCons.gridwidth = rowSpan;
+    }
+
+    private void setupGridBagConstraints(GridBagConstraints layoutCons,
+                                         Integer row, Integer column) {
+        setupGridBagConstraints(layoutCons, row, column, 1);
+    }
+
+    private void addLabel(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons, String labelText,
+                          Integer row, Integer column, Integer rowSpan, Boolean isBold) {
+        JLabel newLabel = new JLabel(tr(labelText));
+        setupGridBagConstraints(layoutCons, row, column, rowSpan);
+        if(isBold)
+            newLabel.setFont(
+                    newLabel.getFont().deriveFont(newLabel.getFont().getStyle() | Font.BOLD));
+        gridbag.setConstraints(newLabel, layoutCons);
+        newLabel.addKeyListener(this);
+        contentPane.add(newLabel);
+    }
+
+    private JTextField addTextField(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                    String text, Integer textLenght,
+                                    Integer row, Integer column, Integer rowSpan) {
+        JTextField newTextField = new JTextField(text, textLenght);
+        setupGridBagConstraints(layoutCons, row, column, rowSpan);
+        gridbag.setConstraints(newTextField, layoutCons);
+        newTextField.addKeyListener(this);
+        contentPane.add(newTextField);
+        return newTextField;
+    }
+
+    private JTextField addTextField(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                    String caption, String value, Integer valueLenght,
+                                    Integer row, Integer column, Boolean isBold) {
+        addLabel(contentPane, gridbag, layoutCons, tr(caption), row, column, 1, isBold);
+        return addTextField(contentPane, gridbag, layoutCons, value, valueLenght, row, column + 1, 1);
+    }
+
+    private JCheckBox addCheckBox(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                  String caption, Integer row, Integer column, Integer rowSpan) {
+        JCheckBox newCheckBox = new JCheckBox(trc(PUBLIC_TRANSPORT_LANG_SECTION_NAME, caption));
+        setupGridBagConstraints(layoutCons, row, column, rowSpan);
+        gridbag.setConstraints(newCheckBox, layoutCons);
+        newCheckBox.addItemListener(this);
+        newCheckBox.addKeyListener(this);
+        contentPane.add(newCheckBox);
+        return newCheckBox;
+    }
+
+    private JCheckBox addCheckBox(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                  String caption, Integer row, Integer column) {
+        return addCheckBox(contentPane, gridbag, layoutCons, tr(caption), row, column, 1);
+    }
+
+    private JComboBox<String> addComboBox(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                          String[] valueCaptions, Integer selectedIndex,
+                                          Integer row, Integer column) {
+        String[] valueCaptionsStrings = new String[valueCaptions.length];
+        for (int i = 0; i < valueCaptions.length; i++) {
+            valueCaptionsStrings[i] = tr(valueCaptions[i]);
+        }
+        JComboBox<String> newComboBox = new JComboBox<String>(valueCaptionsStrings);
+        newComboBox.setSelectedIndex(selectedIndex);
+        setupGridBagConstraints(layoutCons, row, column + 1);
+        gridbag.setConstraints(newComboBox, layoutCons);
+        newComboBox.addKeyListener(this);
+        contentPane.add(newComboBox);
+        return newComboBox;
+    }
+
+    private JComboBox<String> addComboBox(JPanel contentPane, GridBagLayout gridbag, GridBagConstraints layoutCons,
+                                          String caption, String[] valueCaptions, Integer selectedIndex,
+                                          Integer row, Integer column, Boolean isBold) {
+        addLabel(contentPane, gridbag, layoutCons, tr(caption), row, column, 1, isBold);
+        return addComboBox(contentPane, gridbag, layoutCons, valueCaptions, selectedIndex, row, column);
+    }
+
     private JPanel createContentPane() {
         JPanel contentPane = new JPanel();
         GridBagLayout gridbag = new GridBagLayout();
         contentPane.setLayout(gridbag);
         GridBagConstraints layoutCons = new GridBagConstraints();
-        JLabel label = new JLabel(tr(NAME_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 0;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(label, layoutCons);
-        label.addKeyListener(this);
-        contentPane.add(label);
+        layoutCons.insets = new Insets(5, 3, 1, 3);
+        layoutCons.fill = GridBagConstraints.BOTH;
+        layoutCons.weightx = 0.225;
 
-        textFieldName = new JTextField("", 25);
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 0;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(textFieldName, layoutCons);
-        textFieldName.addKeyListener(this);
-        contentPane.add(textFieldName);
+        addLabel(contentPane, gridbag, layoutCons, " ", 0, 0, 1, false);
+        addLabel(contentPane, gridbag, layoutCons, " ", 0, 3, 1, false);
+        addLabel(contentPane, gridbag, layoutCons, " ", 0, 6, 1, false);
 
-        JLabel labelNameEn = new JLabel(tr(NAME_EN_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 1;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(labelNameEn, layoutCons);
-        labelNameEn.addKeyListener(this);
-        contentPane.add(labelNameEn);
+        textFieldRef = addTextField(contentPane, gridbag, layoutCons, REF_CAPTION, "", 25, 0, 1, false);
 
-        textFieldNameEn = new JTextField("", 25);
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 1;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(textFieldNameEn, layoutCons);
-        textFieldNameEn.addKeyListener(this);
-        contentPane.add(textFieldNameEn);
+        layoutCons.insets = new Insets(1, 3, 1, 3);
 
-        JLabel labelNetwork = new JLabel(tr(NETWORK_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 2;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(labelNetwork, layoutCons);
-        labelNetwork.addKeyListener(this);
-        contentPane.add(labelNetwork);
-
-        textFieldNetwork = new JTextField("", 25);
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 2;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(textFieldNetwork, layoutCons);
-        textFieldNetwork.addKeyListener(this);
-        contentPane.add(textFieldNetwork);
-
-        JLabel labelOperator = new JLabel(tr(OPERATOR_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 3;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(labelOperator, layoutCons);
-        labelOperator.addKeyListener(this);
-        contentPane.add(labelOperator);
-
-        textFieldOperator = new JTextField("", 25);
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 3;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(textFieldOperator, layoutCons);
-        textFieldOperator.addKeyListener(this);
-        contentPane.add(textFieldOperator);
-
-        JLabel labelService = new JLabel(tr(NETWORK_LEVEL_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 4;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(labelService, layoutCons);
-        labelService.addKeyListener(this);
-        contentPane.add(labelService);
-
-        String[] serviceTransStrings = new String[serviceCaptionStrings.length];
-        for (int i = 0; i < serviceCaptionStrings.length; i++) {
-            serviceTransStrings[i] = tr(serviceCaptionStrings[i]);
-        }
-        comboBoxService = new JComboBox<String>(serviceTransStrings);
-        comboBoxService.setSelectedIndex(0);
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 4;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(comboBoxService, layoutCons);
-        comboBoxService.addKeyListener(this);
-        contentPane.add(comboBoxService);
-
-        checkBoxIsBus = new JCheckBox(tr(BUS_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 5;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsBus, layoutCons);
-        checkBoxIsBus.addItemListener(this);
-        checkBoxIsBus.addKeyListener(this);
-        contentPane.add(checkBoxIsBus);
-
-        checkBoxIsShareTaxi = new JCheckBox(tr(SHARE_TAXI_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 5;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsShareTaxi, layoutCons);
-        checkBoxIsShareTaxi.addItemListener(this);
-        checkBoxIsShareTaxi.addKeyListener(this);
-        contentPane.add(checkBoxIsShareTaxi);
-
-        checkBoxIsTrolleybus = new JCheckBox(tr(TROLLEYBUS_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 6;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsTrolleybus, layoutCons);
-        checkBoxIsTrolleybus.addItemListener(this);
-        checkBoxIsTrolleybus.addKeyListener(this);
-        contentPane.add(checkBoxIsTrolleybus);
-
-        checkBoxIsBusStation = new JCheckBox(tr(BUS_STATION_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 6;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsBusStation, layoutCons);
-        checkBoxIsBusStation.addItemListener(this);
-        checkBoxIsBusStation.addKeyListener(this);
-        contentPane.add(checkBoxIsBusStation);
-
-        checkBoxIsTram = new JCheckBox(tr(TRAM_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 7;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsTram, layoutCons);
-        checkBoxIsTram.addItemListener(this);
-        checkBoxIsTram.addKeyListener(this);
-        contentPane.add(checkBoxIsTram);
-
-        checkBoxIsTrainStation = new JCheckBox(tr(RAILWAY_STATION_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 8;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsTrainStation, layoutCons);
-        checkBoxIsTrainStation.addItemListener(this);
-        checkBoxIsTrainStation.addKeyListener(this);
-        contentPane.add(checkBoxIsTrainStation);
-
-        checkBoxIsTrainStop = new JCheckBox(tr(RAILWAY_STOP_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 8;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsTrainStop, layoutCons);
-        checkBoxIsTrainStop.addItemListener(this);
-        checkBoxIsTrainStop.addKeyListener(this);
-        contentPane.add(checkBoxIsTrainStop);
-
-        checkBoxIsAssignTransportType = new JCheckBox(tr(ASSIGN_TRANSPORT_TYPE_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 9;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsAssignTransportType, layoutCons);
-        checkBoxIsAssignTransportType.addItemListener(this);
-        checkBoxIsAssignTransportType.addKeyListener(this);
-        contentPane.add(checkBoxIsAssignTransportType);
-
-        checkBoxIsBench = new JCheckBox(tr(BENCH_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 10;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsBench, layoutCons);
-        checkBoxIsBench.addItemListener(this);
-        checkBoxIsBench.addKeyListener(this);
-        contentPane.add(checkBoxIsBench);
-
-        checkBoxIsShelter = new JCheckBox(trc(PUBLIC_TRANSPORT_LANG_SECTION_NAME, SHELTER_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 10;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsShelter, layoutCons);
-        checkBoxIsShelter.addItemListener(this);
-        checkBoxIsShelter.addKeyListener(this);
-        contentPane.add(checkBoxIsShelter);
-
-        checkBoxIsCover = new JCheckBox(tr(COVER_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 11;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsCover, layoutCons);
-        checkBoxIsCover.addItemListener(this);
-        checkBoxIsCover.addKeyListener(this);
-        contentPane.add(checkBoxIsCover);
-
-        checkBoxIsArea = new JCheckBox(tr(AREA_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 11;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints(checkBoxIsArea, layoutCons);
-        checkBoxIsArea.addItemListener(this);
-        checkBoxIsArea.addKeyListener(this);
-        contentPane.add(checkBoxIsArea);
+        textFieldName = addTextField(contentPane, gridbag, layoutCons, NAME_CAPTION, "", 25, 1, 1, false);
+        textFieldNameEn = addTextField(contentPane, gridbag, layoutCons, NAME_EN_CAPTION, "", 25, 1, 4, false);
+        textFieldLocalRef = addTextField(contentPane, gridbag, layoutCons, LOCAL_REF_CAPTION, "", 25, 2, 1, false);
+        comboBoxLayer = addComboBox(contentPane, gridbag, layoutCons, LAYER_CAPTION, layerCaptionStrings,
+                                    5, 2, 4, false);
+        textFieldNetwork = addTextField(contentPane, gridbag, layoutCons, NETWORK_CAPTION, "", 25, 3, 1, false);
+        textFieldOperator = addTextField(contentPane, gridbag, layoutCons, OPERATOR_CAPTION, "", 25, 3, 4, false);
+        comboBoxService = addComboBox(contentPane, gridbag, layoutCons, NETWORK_LEVEL_CAPTION, serviceCaptionStrings,
+                0, 4, 1, false);
+        comboBoxOnDemand = addComboBox(contentPane, gridbag, layoutCons, ON_DEMAND_CAPTION, onDemandCaptionStrings,
+                0, 4, 4, false);
+        addLabel(contentPane, gridbag, layoutCons, TRANSPORT_TYPES_CAPTION, 5, 1, 2, true);
+        checkBoxIsBus = addCheckBox(contentPane, gridbag, layoutCons, BUS_CAPTION, 6,1);
+        checkBoxIsShareTaxi = addCheckBox(contentPane, gridbag, layoutCons, SHARE_TAXI_CAPTION, 6, 2);
+        checkBoxIsTrolleybus = addCheckBox(contentPane, gridbag, layoutCons, TROLLEYBUS_CAPTION, 7, 1);
+        checkBoxIsBusStation = addCheckBox(contentPane, gridbag, layoutCons, BUS_STATION_CAPTION, 7, 2);
+        checkBoxIsTram = addCheckBox(contentPane, gridbag, layoutCons, TRAM_CAPTION, 6, 4);
+        checkBoxIsSubwayStation = addCheckBox(contentPane, gridbag, layoutCons, SUBWAY_STATION_CAPTION, 6, 5);
+        checkBoxIsTrainStop = addCheckBox(contentPane, gridbag, layoutCons, RAILWAY_STOP_CAPTION, 7, 4);
+        checkBoxIsTrainStation = addCheckBox(contentPane, gridbag, layoutCons, RAILWAY_STATION_CAPTION, 7, 5);
+        checkBoxIsAssignTransportType = addCheckBox(contentPane, gridbag, layoutCons, ASSIGN_TRANSPORT_TYPE_CAPTION, 8, 1, 2);
+        checkBoxIsArea = addCheckBox(contentPane, gridbag, layoutCons, AREA_CAPTION, 8, 5);
+        addLabel(contentPane, gridbag, layoutCons, tr(PLATFORM_ATTRIBUTES_CAPTION), 9, 1, 1, true);
+        checkBoxIsBench = addCheckBox(contentPane, gridbag, layoutCons, BENCH_CAPTION, 10, 1);
+        checkBoxIsShelter = addCheckBox(contentPane, gridbag, layoutCons, SHELTER_CAPTION, 10, 2);
+        checkBoxIsCover = addCheckBox(contentPane, gridbag, layoutCons, COVER_CAPTION, 11, 1);
+        checkBoxIsLit = addCheckBox(contentPane, gridbag, layoutCons, LIT_CAPTION, 11, 2);
+        comboBoxDeparturesBoard = addComboBox(contentPane, gridbag, layoutCons, DEPARTURES_BOARD_CAPTION,
+                departuresBoardCaptionStrings,0, 10, 4, false);
+        checkBoxIsBin = addCheckBox(contentPane, gridbag, layoutCons, BIN_CAPTION, 11, 4);
+        comboBoxSurface = addComboBox(contentPane, gridbag, layoutCons, SURFACE_CAPTION, surfaceCaptionStrings,
+                0, 12, 1, false);
+        comboBoxTactilePaving = addComboBox(contentPane, gridbag, layoutCons, TACTILE_PAVING_CAPTION,
+                tactilePavingCaptionStrings,0, 12, 4, false);
+        checkBoxIsSetDefaultValues = addCheckBox(contentPane, gridbag, layoutCons, SET_DEFAULT_VALUES_CAPTION, 13, 4);
 
         JButton buttonSave = new JButton(tr(SAVE_BUTTON_CAPTION));
-        layoutCons.gridx = 0;
-        layoutCons.gridy = 12;
-        layoutCons.weightx = 0.5;
-        layoutCons.fill = GridBagConstraints.HORIZONTAL;
-        layoutCons.insets = new Insets(10, 0, 0, 0);
+        layoutCons.gridx = 2;
+        layoutCons.gridy = 14;
+        layoutCons.insets = new Insets(10, 0, 10, 3);
+        layoutCons.fill = GridBagConstraints.PAGE_END;
+        layoutCons.anchor = GridBagConstraints.EAST;
         gridbag.setConstraints(buttonSave, layoutCons);
         buttonSave.setActionCommand(SAVE_COMMAND);
         buttonSave.addActionListener(this);
@@ -397,16 +420,17 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
         contentPane.add(buttonSave);
 
         JButton buttonCancel = new JButton(tr(CANCEL_BUTTON_CAPTION));
-        layoutCons.gridx = 1;
-        layoutCons.gridy = 12;
-        layoutCons.weightx = 0.5;
+        layoutCons.gridx = 4;
+        layoutCons.gridy = 14;
         layoutCons.fill = GridBagConstraints.LINE_START;
-        layoutCons.insets = new Insets(10, 0, 0, 0);
+        layoutCons.anchor = GridBagConstraints.WEST;
+        layoutCons.insets = new Insets(10, 3, 10, 0);
         gridbag.setConstraints(buttonCancel, layoutCons);
         buttonCancel.setActionCommand(CANCEL_COMMAND);
         buttonCancel.addActionListener(this);
         buttonCancel.addKeyListener(this);
         contentPane.add(buttonCancel);
+
         return contentPane;
     }
 
@@ -515,16 +539,25 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
     /**
      * Get index of network level
      * 
-     * @param service Network level name
+     * @param currentValue Network level name
      * @return Index of network level
      */
-    private int getServiceIndex(String service) {
-        for (int i = 0; i < serviceStrings.length; i++) {
-            if (serviceStrings[i].equals(service)) {
-                return i;
+    private int getArrayIndex(String[] arrayValues, String currentValue) {
+        if(null != arrayValues) {
+            for (int i = 0; i < arrayValues.length; i++) {
+                if (arrayValues[i].equals(currentValue)) {
+                    return i;
+                }
             }
         }
         return 0;
+    }
+
+    private void setComboBoxValue(JComboBox comboBox, String[] comboBoxValues, String currentValue)
+    {
+        if(null != comboBox) {
+            comboBox.setSelectedIndex(getArrayIndex(comboBoxValues, currentValue));
+        }
     }
 
     /**
@@ -553,7 +586,7 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
             textFieldOperator.setText(previousOperator);
 //        if (stopArea.additionalSelectedObject != null)
 //            textFieldOperator.setText(String.valueOf(stopArea.additionalSelectedObject.getId()));
-        comboBoxService.setSelectedIndex(getServiceIndex(stopArea.service));
+        setComboBoxValue(comboBoxService, serviceTagValues, stopArea.service);
         setCheckBoxValue(checkBoxIsBus, stopArea.isBus);
         setCheckBoxValue(checkBoxIsShareTaxi, stopArea.isShareTaxi);
         setCheckBoxValue(checkBoxIsTrolleybus, stopArea.isTrolleybus);
@@ -567,6 +600,21 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
         setCheckBoxValue(checkBoxIsShelter, stopArea.isShelter);
         setCheckBoxValue(checkBoxIsCover, stopArea.isCovered);
         setCheckBoxValue(checkBoxIsArea, stopArea.isArea);
+
+        if (stopArea.ref != null)
+            textFieldRef.setText(stopArea.ref);
+        if (stopArea.localRef != null)
+            textFieldLocalRef.setText(stopArea.localRef);
+        setComboBoxValue(comboBoxLayer, layerTagValues, stopArea.layer);
+        setComboBoxValue(comboBoxOnDemand, onDemandTagValues, stopArea.onDemand);
+        setCheckBoxValue(checkBoxIsSubwayStation, stopArea.isSubwayStation);
+        setCheckBoxValue(checkBoxIsLit, stopArea.isLit);
+        setCheckBoxValue(checkBoxIsBin, stopArea.isBin);
+        setComboBoxValue(comboBoxDeparturesBoard, departuresBoardTagValues, stopArea.departuresBoard);
+        setComboBoxValue(comboBoxSurface, surfaceTagValues, stopArea.surface);
+        setComboBoxValue(comboBoxTactilePaving, tactilePavingTagValues, stopArea.tactilePaving);
+
+        setCheckBoxValue(checkBoxIsSetDefaultValues, previousIsSetDefaultValues);
     }
 
     /**
@@ -591,27 +639,39 @@ public class CustomizePublicTransportStopDialog implements ActionListener, ItemL
         try {
             if (stopArea == null)
                 stopArea = new StopArea();
+            stopArea.ref = getTextFromControl(textFieldRef);
             stopArea.name = getTextFromControl(textFieldName);
             previousName = stopArea.name;
             stopArea.nameEn = getTextFromControl(textFieldNameEn);
             previousNameEn = stopArea.nameEn;
+            stopArea.localRef = getTextFromControl(textFieldLocalRef);
+            stopArea.layer = layerTagValues[comboBoxLayer.getSelectedIndex()];
             stopArea.network = getTextFromControl(textFieldNetwork);
             previousNetwork = stopArea.network;
             stopArea.operator = getTextFromControl(textFieldOperator);
             previousOperator = stopArea.operator;
-            stopArea.service = serviceStrings[comboBoxService.getSelectedIndex()];
+            stopArea.service = serviceTagValues[comboBoxService.getSelectedIndex()];
+            stopArea.onDemand = onDemandTagValues[comboBoxOnDemand.getSelectedIndex()];
             stopArea.isBus = getCheckBoxValue(checkBoxIsBus);
             stopArea.isShareTaxi = getCheckBoxValue(checkBoxIsShareTaxi);
             stopArea.isTrolleybus = getCheckBoxValue(checkBoxIsTrolleybus);
             stopArea.isBusStation = getCheckBoxValue(checkBoxIsBusStation);
-            stopArea.isAssignTransportType = getCheckBoxValue(checkBoxIsAssignTransportType);
             stopArea.isTram = getCheckBoxValue(checkBoxIsTram);
-            stopArea.isTrainStation = getCheckBoxValue(checkBoxIsTrainStation);
+            stopArea.isSubwayStation = getCheckBoxValue(checkBoxIsSubwayStation);
             stopArea.isTrainStop = getCheckBoxValue(checkBoxIsTrainStop);
+            stopArea.isTrainStation = getCheckBoxValue(checkBoxIsTrainStation);
+            stopArea.isAssignTransportType = getCheckBoxValue(checkBoxIsAssignTransportType);
             stopArea.isBench = getCheckBoxValue(checkBoxIsBench);
             stopArea.isShelter = getCheckBoxValue(checkBoxIsShelter);
             stopArea.isCovered = getCheckBoxValue(checkBoxIsCover);
+            stopArea.isLit = getCheckBoxValue(checkBoxIsLit);
+            stopArea.isBin = getCheckBoxValue(checkBoxIsBin);
+            stopArea.departuresBoard = departuresBoardTagValues[comboBoxDeparturesBoard.getSelectedIndex()];
+            stopArea.surface = surfaceTagValues[comboBoxSurface.getSelectedIndex()];
+            stopArea.tactilePaving = tactilePavingTagValues[comboBoxTactilePaving.getSelectedIndex()];
             stopArea.isArea = getCheckBoxValue(checkBoxIsArea);
+            stopArea.isSetDefaultValues = getCheckBoxValue(checkBoxIsSetDefaultValues);
+            previousIsSetDefaultValues = stopArea.isSetDefaultValues;
         } catch (Exception ex) {
             MessageBox.ok(ex.getMessage());
         }

@@ -52,6 +52,10 @@ public class StopArea {
      */
     public Boolean isBusStation = false;
     /**
+     * Flag of subway station
+     */
+    public Boolean isSubwayStation = false;
+    /**
      * Flag of tram stop area
      */
     public Boolean isTram = false;
@@ -118,11 +122,11 @@ public class StopArea {
     /**
      * Separate node of bus stop or bus station
      */
-    public Boolean lit = false;
+    public Boolean isLit = false;
     /**
      * Separate node of bus stop or bus station
      */
-    public Boolean bin = false;
+    public Boolean isBin = false;
     /**
      * Separate node of bus stop or bus station
      */
@@ -153,6 +157,8 @@ public class StopArea {
      * Selected josm objects. Must be a platform
      */
     public OsmPrimitive additionalSelectedObject = null;
+
+    public Boolean isSetDefaultValues = Boolean.FALSE;
 
     /**
      * Constructor of stop area object

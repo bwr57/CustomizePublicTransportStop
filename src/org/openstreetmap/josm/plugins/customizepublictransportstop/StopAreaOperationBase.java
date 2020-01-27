@@ -94,6 +94,32 @@ public abstract class StopAreaOperationBase implements IStopAreaCustomizer {
     }
 
     /**
+     * Assign tag value to JOSM object
+     *
+     * @param commands Command list
+     * @param target Target OSM object
+     * @param tag Tag name
+     * @param tagValue Tag value
+     * @return Resulting command list
+     */
+    public static List<Command> assignTag(List<Command> commands, OsmPrimitive target, String tag, String tagValue,
+                                          String defautValue, Boolean isSetDefaultValue) {
+        if(null == target)
+            return commands;
+        if(null == tagValue)
+        {
+            if(!compareTag(target, tag, defautValue)) {
+                if(isSetDefaultValue) {
+                    tagValue = defautValue;
+                }
+                return assignTag(commands, target, tag, tagValue);
+            }
+            return commands;
+        }
+        return assignTag(commands, target, tag, tagValue);
+    }
+
+    /**
      * Clear tag value of JOSM object
      * 
      * @param commands Command list
@@ -103,6 +129,19 @@ public abstract class StopAreaOperationBase implements IStopAreaCustomizer {
      */
     public static List<Command> clearTag(List<Command> commands, OsmPrimitive target, String tag) {
         return assignTag(commands, target, tag, null);
+    }
+
+    /**
+     * Clear tag value of JOSM object
+     *
+     * @param commands Command list
+     * @param target Target OSM object
+     * @param tag Tag name
+     * @return Resulting command list
+     */
+    public static List<Command> clearTag(List<Command> commands, OsmPrimitive target, String tag,
+                                         String defautValue, Boolean isSetDefaultValue) {
+        return assignTag(commands, target, tag, null, defautValue, isSetDefaultValue);
     }
 
     /**

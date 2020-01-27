@@ -32,6 +32,7 @@ public final class OSMTags {
     public static final String TRAIN_TAG = "train";
     public static final String STOP_POSITION_TAG_VALUE = "stop_position";
     public static final String STATION_TAG_VALUE = "station";
+    public static final String SUBWAY_TAG_VALUE = "subway";
     public static final String HALT_TAG_VALUE = "halt";
     public static final String YES_TAG_VALUE = "yes";
     public static final String RAILWAY_TAG = "railway";
@@ -56,6 +57,8 @@ public final class OSMTags {
     public static final String PLATFORM_ROLE = "platform";
     public static final String PLATFORM_TAG_VALUE = "platform";
     public static final String SERVICE_TAG = "service";
+    public static final String NO_TAG_VALUE = "no";
+    public static final String UNKNOWN_TAG_VALUE = "unknown";
 
     public static final String CITY_NETWORK_TAG_VALUE_OLD = "city";
     public static final String CITY_NETWORK_TAG_VALUE = "urban";
@@ -67,6 +70,8 @@ public final class OSMTags {
     public static final String TOURISM_NETWORK_TAG_VALUE = "tourism";
     public static final String SCHOOL_NETWORK_TAG_VALUE = "school";
     public static final String FACTORY_NETWORK_TAG_VALUE = "factory";
+
+    public static final String REGULAR_STOP_TAG_VALUE = "regular";
 
     public static final String REF_TAG = "ref";
     public static final String LOCAL_REF_TAG = "local_ref";
@@ -86,9 +91,9 @@ public final class OSMTags {
     public static final String DEPARTURES_BOARD_REALTIME_TAG_VALUE = "realtime";
 
     public static final String TACTILE_PAVING_YES_TAG_VALUE = "yes";
-    public static final String TACTILE_PAVING_CONTRASTED_TAG_TAG_VALUE = "contrasted";
-    public static final String TACTILE_PAVING_PRIMITIVE_TAG_TAG_VALUE = "primitive";
-    public static final String TACTILE_PAVING_INCORRECT_TAG_TAG_VALUE = "incorrect";
+    public static final String TACTILE_PAVING_CONTRASTED_TAG_VALUE = "contrasted";
+    public static final String TACTILE_PAVING_PRIMITIVE_TAG_VALUE = "primitive";
+    public static final String TACTILE_PAVING_INCORRECT_TAG_VALUE = "incorrect";
 
     public static final String SURFACE_PAVED_TAG_VALUE = "paved";
     public static final String SURFACE_ASPHALT_TAG_VALUE = "asphalt";

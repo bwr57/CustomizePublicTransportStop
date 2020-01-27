@@ -57,6 +57,7 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
         if (commands == null)
             commands = new ArrayList<Command>();
 
+        commands = assignTag(commands, target, OSMTags.REF_TAG, "".equals(stopArea.ref) ? null : stopArea.ref);
         commands = assignTag(commands, target, OSMTags.NAME_TAG, "".equals(stopArea.name) ? null : stopArea.name);
         commands = assignTag(commands, target, OSMTags.NAME_EN_TAG,
                 "".equals(stopArea.nameEn) ? null : stopArea.nameEn);
@@ -151,7 +152,11 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
                 null == stopArea.service || OSMTags.CITY_NETWORK_TAG_VALUE.equals(stopArea.service)
                         || OSMTags.CITY_NETWORK_TAG_VALUE_OLD.equals(stopArea.service) ? null
                         : stopArea.service);
-
+        commands = assignTag(commands, target, OSMTags.ON_DEMAND_TAG,
+                null == stopArea.onDemand || OSMTags.CITY_NETWORK_TAG_VALUE.equals(stopArea.onDemand)
+                        || OSMTags.CITY_NETWORK_TAG_VALUE_OLD.equals(stopArea.onDemand)
+                        || OSMTags.REGULAR_STOP_TAG_VALUE.equals(stopArea.onDemand) ? null
+                        : stopArea.onDemand);
         return commands;
     }
 
@@ -176,6 +181,8 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
                 commands = assignTag(commands, target, OSMTags.RAILWAY_TAG, OSMTags.HALT_TAG_VALUE);
             } else if (stopArea.isTrainStation) {
                 commands = assignTag(commands, target, OSMTags.RAILWAY_TAG, OSMTags.STATION_TAG_VALUE);
+            } else if (stopArea.isSubwayStation) {
+                commands = assignTag(commands, target, OSMTags.RAILWAY_TAG, OSMTags.SUBWAY_TAG_VALUE);
             } else if (stopArea.isTram)
                 commands = assignTag(commands, target, OSMTags.RAILWAY_TAG, OSMTags.TRAM_STOP_TAG_VALUE);
             else
@@ -197,7 +204,6 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
      * @param target Platform node or way
      * @param commands Original command list
      * @param stopArea Stop area object
-     * @param isSelected true, if this platform is selected in editor
      * @param isFirst true, if this platform is first in stop area
      * @return Resulting command list
      */
@@ -212,7 +218,8 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
         if (compareTag(target, OSMTags.RAILWAY_TAG, OSMTags.HALT_TAG_VALUE)
                 || compareTag(target, OSMTags.RAILWAY_TAG, OSMTags.STATION_TAG_VALUE))
             commands = clearTag(commands, target, OSMTags.RAILWAY_TAG);
-        if (target instanceof Way && (stopArea.isTrainStop || stopArea.isTrainStation || stopArea.isTram))
+        if (target instanceof Way && (stopArea.isTrainStop || stopArea.isTrainStation
+                || stopArea.isSubwayStation || stopArea.isTram))
             commands = assignTag(commands, target, OSMTags.RAILWAY_TAG, OSMTags.PLATFORM_TAG_VALUE);
         if (stopArea.isBus || stopArea.isShareTaxi || stopArea.isTrolleybus) {
             if (target instanceof Way)
@@ -221,13 +228,39 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
                 commands = assignTag(commands, target, OSMTags.HIGHWAY_TAG, OSMTags.BUS_STOP_TAG_VALUE);
         }
         commands = assignTag(commands, target, OSMTags.PUBLIC_TRANSPORT_TAG, OSMTags.PLATFORM_TAG_VALUE);
+        commands = assignTag(commands, target, OSMTags.DEPARTURES_BOARD_TAG,
+                null == stopArea.departuresBoard || OSMTags.NO_TAG_VALUE.equals(stopArea.departuresBoard) ? null :
+                        stopArea.departuresBoard, OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
         if (target == stopArea.selectedObject) {
-            commands = assignTag(commands, target, OSMTags.BENCH_TAG, stopArea.isBench ? OSMTags.YES_TAG_VALUE : null);
+            commands = assignTag(commands, target, OSMTags.LOCAL_REF_TAG,
+                    "".equals(stopArea.localRef) ? null : stopArea.localRef);
+            commands = assignTag(commands, target, OSMTags.BENCH_TAG,
+                    stopArea.isBench ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
             commands = assignTag(commands, target, OSMTags.SHELTER_TAG,
-                    stopArea.isShelter ? OSMTags.YES_TAG_VALUE : null);
+                    stopArea.isShelter ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
             commands = assignTag(commands, target, OSMTags.COVERED_TAG,
-                    stopArea.isCovered ? OSMTags.YES_TAG_VALUE : null);
-            commands = assignTag(commands, target, OSMTags.AREA_TAG, stopArea.isArea ? OSMTags.YES_TAG_VALUE : null);
+                    stopArea.isCovered ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
+            commands = assignTag(commands, target, OSMTags.LIT_TAG,
+                    stopArea.isLit ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
+            commands = assignTag(commands, target, OSMTags.BIN_TAG,
+                    stopArea.isBin ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
+            commands = assignTag(commands, target, OSMTags.AREA_TAG, stopArea.isArea ? OSMTags.YES_TAG_VALUE : null,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
+            commands = assignTag(commands, target, OSMTags.LAYER_TAG,
+                    null == stopArea.layer || "0".equals(stopArea.layer) ? null : stopArea.service);
+            commands = assignTag(commands, target, OSMTags.SURFACE_TAG,
+                    null == stopArea.surface || OSMTags.UNKNOWN_TAG_VALUE.equals(stopArea.surface) ? null :
+                            stopArea.surface,
+                    OSMTags.UNKNOWN_TAG_VALUE, stopArea.isSetDefaultValues);
+            commands = assignTag(commands, target, OSMTags.TACTILE_PAVING_TAG,
+                    null == stopArea.tactilePaving || OSMTags.NO_TAG_VALUE.equals(stopArea.tactilePaving) ? null :
+                            stopArea.tactilePaving,
+                    OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
         }
         return commands;
     }
@@ -479,7 +512,7 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
     /**
      * Forming commands for JOSM for saving stop area members and relation
      * attributes
-     * 
+     *
      * @param stopArea Stop area object
      * @return Resulting command list
      */

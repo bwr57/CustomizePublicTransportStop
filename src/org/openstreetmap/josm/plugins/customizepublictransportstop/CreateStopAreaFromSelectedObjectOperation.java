@@ -44,6 +44,8 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
             stopArea.service = getTagValue(member, OSMTags.SERVICE_TAG);
         if (OSMTags.LOCAL_NETWORK_TAG_VALUE.equals(stopArea.service))
             stopArea.service = OSMTags.COMMUTER_NETWORK_TAG_VALUE;
+        if (stopArea.onDemand == null)
+            stopArea.onDemand = getTagValue(member, OSMTags.ON_DEMAND_TAG);
         if (compareTag(member, OSMTags.BUS_TAG, OSMTags.YES_TAG_VALUE))
             stopArea.isBus = true;
         if (compareTag(member, OSMTags.TROLLEYBUS_TAG, OSMTags.YES_TAG_VALUE))
@@ -58,11 +60,29 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
             stopArea.isTram = true;
         if (compareTag(member, OSMTags.RAILWAY_TAG, OSMTags.HALT_TAG_VALUE))
             stopArea.isTrainStop = true;
-        if (compareTag(member, OSMTags.RAILWAY_TAG, OSMTags.STATION_TAG_VALUE))
-            stopArea.isTrainStation = true;
+        if (compareTag(member, OSMTags.RAILWAY_TAG, OSMTags.STATION_TAG_VALUE)) {
+            if (compareTag(member, OSMTags.STATION_TAG_VALUE, OSMTags.SUBWAY_TAG_VALUE)) {
+                stopArea.isSubwayStation = true;
+                if (compareTag(member, OSMTags.TRAIN_TAG, OSMTags.YES_TAG_VALUE)) {
+                    stopArea.isTrainStation = true;
+                }
+            }
+            else
+                stopArea.isTrainStation = true;
+        }
         if (compareTag(member, OSMTags.AMENITY_TAG, OSMTags.BUS_STATION_TAG_VALUE)) {
             stopArea.isBusStation = true;
         }
+
+        if(stopArea.ref == null)
+            stopArea.ref = getTagValue(member, OSMTags.REF_TAG);
+        if(stopArea.departuresBoard == null)
+            stopArea.departuresBoard = getTagValue(member, OSMTags.DEPARTURES_BOARD_TAG);
+        if(stopArea.onDemand == null)
+            stopArea.onDemand = getTagValue(member, OSMTags.ON_DEMAND_TAG);
+        if (compareTag(member, OSMTags.PASSENGER_INFORMATION_DISPLAY_TAG, OSMTags.YES_TAG_VALUE))
+            stopArea.passengerInformationDisplay = true;
+
         if (member == stopArea.selectedObject) {
             if (compareTag(member, OSMTags.BENCH_TAG, OSMTags.YES_TAG_VALUE))
                 stopArea.isBench = true;
@@ -72,6 +92,19 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
                 stopArea.isCovered = true;
             if (compareTag(member, OSMTags.AREA_TAG, OSMTags.YES_TAG_VALUE))
                 stopArea.isArea = true;
+
+            if(stopArea.localRef == null)
+                stopArea.localRef = getTagValue(member, OSMTags.LOCAL_REF_TAG);
+            if(stopArea.layer == null)
+                stopArea.layer = getTagValue(member, OSMTags.LAYER_TAG);
+            if (compareTag(member, OSMTags.LIT_TAG, OSMTags.YES_TAG_VALUE))
+                stopArea.isLit = true;
+            if (compareTag(member, OSMTags.BIN_TAG, OSMTags.YES_TAG_VALUE))
+                stopArea.isBin = true;
+            if(stopArea.surface == null)
+                stopArea.surface = getTagValue(member, OSMTags.SURFACE_TAG);
+            if(stopArea.tactilePaving == null)
+                stopArea.tactilePaving = getTagValue(member, OSMTags.TACTILE_PAVING_TAG);
         }
     }
 
@@ -142,6 +175,8 @@ public class CreateStopAreaFromSelectedObjectOperation extends StopAreaOperation
                         || stopArea.isBusStation)) {
             stopArea.isBus = true;
         }
+        if(null == stopArea.layer)
+            stopArea.layer = "0";
     }
 
     /**
