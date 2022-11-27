@@ -268,7 +268,7 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
             dist_waySegments = getNearestWaySegmentsImpl(p);
         for (Map.Entry<Double, List<WaySegment>> entry : dist_waySegments.entrySet()) {
             for (WaySegment waySegment : entry.getValue()) {
-                if (testWay(waySegment.way, stopArea)) {
+                if (testWay(waySegment.getWay(), stopArea)) {
                     Node n = waySegment.getFirstNode();
                     Node lastN = waySegment.getSecondNode();
 
@@ -298,11 +298,11 @@ public class CreateNewStopPointOperation extends StopAreaOperationBase {
      */
     protected Node createNodeOnWay(Node newStopNode, WaySegment waySegment) {
         UndoRedoHandler.getInstance().add(new AddCommand(MainApplication.getLayerManager().getEditDataSet(), newStopNode));
-        List<Node> wayNodes = waySegment.way.getNodes();
-        wayNodes.add(waySegment.lowerIndex + 1, newStopNode);
-        Way newWay = new Way(waySegment.way);
+        List<Node> wayNodes = waySegment.getWay().getNodes();
+        wayNodes.add(waySegment.getLowerIndex() + 1, newStopNode);
+        Way newWay = new Way(waySegment.getWay());
         newWay.setNodes(wayNodes);
-        UndoRedoHandler.getInstance().add(new ChangeCommand(waySegment.way, newWay));
+        UndoRedoHandler.getInstance().add(new ChangeCommand(waySegment.getWay(), newWay));
         return newStopNode;
     }
 

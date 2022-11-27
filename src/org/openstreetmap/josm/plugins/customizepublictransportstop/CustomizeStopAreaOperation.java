@@ -252,7 +252,7 @@ public class CustomizeStopAreaOperation extends StopAreaOperationBase {
             commands = assignTag(commands, target, OSMTags.AREA_TAG, stopArea.isArea ? OSMTags.YES_TAG_VALUE : null,
                     OSMTags.NO_TAG_VALUE, stopArea.isSetDefaultValues);
             commands = assignTag(commands, target, OSMTags.LAYER_TAG,
-                    null == stopArea.layer || "0".equals(stopArea.layer) ? null : stopArea.service);
+                    null == stopArea.layer || "0".equals(stopArea.layer) ? null : stopArea.layer);
             commands = assignTag(commands, target, OSMTags.SURFACE_TAG,
                     null == stopArea.surface || OSMTags.UNKNOWN_TAG_VALUE.equals(stopArea.surface) ? null :
                             stopArea.surface,
